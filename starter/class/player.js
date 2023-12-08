@@ -1,11 +1,14 @@
 const {Character} = require('./character');
 const {Enemy} = require('./enemy');
 const {Food} = require('./food');
+const { Room } = require('./room');
+const { World } = require('./world');
 
 class Player extends Character {
 
   constructor(name, startingRoom) {
-    super(name, "main character", startingRoom);
+    super(name, "main character", startingRoom,100,10);
+    this.items =[];
   }
 
   move(direction) {
@@ -34,34 +37,99 @@ class Player extends Character {
   }
 
   takeItem(itemName) {
+    if (this.currentRoom instanceof Room) {
+      // Check if the current room is an instance of the Room class
 
+      // Find the index of the item by its name in the room's items array
+      const itemIndex = this.currentRoom.items.findIndex(item => item.name === itemName);
+
+      if (itemIndex !== -1) {
+        // If the item is found in the room, remove it from the room's items array
+        const removedItem = this.currentRoom.items.splice(itemIndex, 1)[0];
+
+        // Add the removed item to the player's items array
+        this.items.push(removedItem);
+
+
+      } else {
+        console.log(`${itemName} not found in the room`);
+      }
+    } else {
+      console.log("Player is not in a valid room");
+    }
     // Fill this in
 
   }
 
   dropItem(itemName) {
+    let itemIndex = -1;
+    if (this.currentRoom instanceof Room) {
+      for (let i = 0; i < this.items.length; i++) {
+        let item = this.items[i];
+        if (item.name === itemName) {
+          itemIndex = i;
+        }
+      }
+      if (itemIndex !== -1) {
+        const removedItem = this.items.splice(itemIndex, 1)[0];
+        this.currentRoom.items.push(removedItem);
+      }
+      else {
+        console.log(`${itemName} not found in the room`);
+      }
 
+    }
     // Fill this in
 
   }
 
   eatItem(itemName) {
+    for (let i = 0; i < this.items.length; i++) {
+      let item = this.items[i];
+      if (item instanceof Food) {
+        if (item.name === itemName) {
+          this.items.splice(i, 1);
+        }
+      }
 
+
+    }
+    return -1;
     // Fill this in
 
   }
 
   getItemByName(name) {
-
+    let item = "not Found";
+    for (let i = 0; i < this.items.length; i++) {
+      if (this.items[i].name === name) {
+        item = this.items[i];
+        break;
+      }
+    }
+    return item;
     // Fill this in
 
   }
 
-  hit(name) {
+  hit(target) {
+    
+    
+      // Assuming target is the name of an enemy
+   
+      // Assuming target is the name of an enemy
+      const enemyInRoom = this.currentRoom.getEnemyByName(target);
 
-    // Fill this in
+      if (enemyInRoom) {
+        enemyInRoom.applyDamage(this.strength);
+        enemyInRoom.attackTarget = this;
+      }
+    
 
-  }
+     
+   
+    }
+  
 
   die() {
     console.log("You are dead!");
@@ -73,3 +141,4 @@ class Player extends Character {
 module.exports = {
   Player,
 };
+

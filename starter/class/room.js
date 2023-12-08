@@ -53,16 +53,27 @@ class Room {
 
   getItemByName(name) {
 
-    // Fill this in
 
+    let item = "not Found";
+    for (let i = 0; i < this.items.length; i++) {
+      if (this.items[i].name === name) {
+        item = this.items[i];
+        break;
+      }
+    }
+    return item;
   }
 
-  getEnemyByName(name) {
+  
 
-    // Fill this in
+  getEnemyByName(name) {
+    
+   
+      return this.getEnemies().find(enemy => enemy.name.toLowerCase() === name.toLowerCase());
+    
 
 }
-
+}
 module.exports = {
   Room,
 };
